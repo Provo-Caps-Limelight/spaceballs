@@ -4,9 +4,24 @@
 
 package frc.robot;
 
+import edu.wpi.first.wpilibj.Joystick;
 import edu.wpi.first.wpilibj.TimedRobot;
 import edu.wpi.first.wpilibj.smartdashboard.SendableChooser;
 import edu.wpi.first.wpilibj.smartdashboard.SmartDashboard;
+import com.ctre.phoenix.motorcontrol.NeutralMode;
+import com.ctre.phoenix.motorcontrol.TalonFXControlMode;
+import com.ctre.phoenix.motorcontrol.can.WPI_VictorSPX;
+import com.ctre.phoenix.motorcontrol.can.WPI_TalonFX;
+import com.revrobotics.CANSparkMax;
+import com.revrobotics.RelativeEncoder;
+import com.revrobotics.CANSparkMax.IdleMode;
+import com.revrobotics.CANSparkMaxLowLevel.MotorType;
+import edu.wpi.first.wpilibj.XboxController;
+import edu.wpi.first.wpilibj.drive.DifferentialDrive;
+import edu.wpi.first.wpilibj.motorcontrol.MotorControllerGroup;
+import edu.wpi.first.wpilibj.shuffleboard.BuiltInWidgets;
+import edu.wpi.first.wpilibj.shuffleboard.ComplexWidget;
+import edu.wpi.first.wpilibj.shuffleboard.Shuffleboard;
 
 /**
  * The VM is configured to automatically run this class, and to call the functions corresponding to
@@ -15,11 +30,19 @@ import edu.wpi.first.wpilibj.smartdashboard.SmartDashboard;
  * project.
  */
 public class Robot extends TimedRobot {
+
   private static final String kDefaultAuto = "Default";
   private static final String kCustomAuto = "My Auto";
   private String m_autoSelected;
-  private final SendableChooser<String> m_chooser = new SendableChooser<>();
 
+  private final SendableChooser<String> m_chooser = new SendableChooser<>();
+  //private final Joystick joystick = new Joystick(0);
+  private final XboxController xboxController = new XboxController(0);
+  private DriveTrain driveTrain = DriveTrain.getInstance2();
+  private FeederWheel feederWheel = FeederWheel.getInstance();
+  private Flywheel flywheel = Flywheel.getInstance();
+
+ 
   /**
    * This function is run when the robot is first started up and should be used for any
    * initialization code.
@@ -72,35 +95,105 @@ public class Robot extends TimedRobot {
     }
   }
 
-  /** This function is called once when teleop is enabled. */
-  @Override
-  public void teleopInit() {}
+  double drive_speed = 0.0;
+    double prev_speed = 0.0;
+    @Override
+    public void teleopPeriodic() {
 
-  /** This function is called periodically during operator control. */
-  @Override
-  public void teleopPeriodic() {}
+        // if (!(prev_speed - 0.025 < drive_speed && prev_speed + 0.025 > drive_speed)) {
+        //     if (drive_speed < prev_speed && prev_speed > 0) {
+        //         drive_speed = prev_speed - 0.025;
+        //     }
+        //     else if (drive_speed > prev_speed && prev_speed < 0) {
+        //         drive_speed = prev_speed + 0.025;
+        //     }
+        // }
 
-  /** This function is called once when the robot is disabled. */
-  @Override
-  public void disabledInit() {}
 
-  /** This function is called periodically when disabled. */
-  @Override
-  public void disabledPeriodic() {}
+        drive_speed = xboxController.getRightX();
 
-  /** This function is called once when test mode is enabled. */
-  @Override
-  public void testInit() {}
+        driveTrain.arcadeDrive(drive_speed, -xboxController.getLeftY() * 0.6);
 
-  /** This function is called periodically during test mode. */
-  @Override
-  public void testPeriodic() {}
+  
+        flywheel.setFlywheelSpeed(xboxController.getLeftTriggerAxis());
+        
+        feederWheel.setFeederWheelSpeed(xboxController.getRightTriggerAxis());
 
-  /** This function is called once when the robot is first started up. */
-  @Override
-  public void simulationInit() {}
+        driveTrain.drivetrainAngleLineup(xboxController.getLeftX());
 
-  /** This function is called periodically whilst in simulation. */
+        /*  if (joystick.getRawButton(8)) {
+        // intake.on();
+        // }
+        // else if (joystick.getRawButton(7)) {
+        // intake.reverse();
+        // }
+        // else {
+        // intake.off();
+        // }
+
+        // // if (xboxController.getRightBumper()) {
+        // //   rightIntake.set(1);
+        // // }
+        // // else {
+        // //   rightIntake.set(0);
+        // // }
+
+        // if (xboxController.getRightTriggerAxis() > .1) {
+        // // flywheelMotors.set(flywheelSpeed);
+        // leftFlywheel.set(TalonFXControlMode.PercentOutput, .68);
+        // // leftFlywheel.set(TalonFXControlMode.Velocity, 12500); 
+        // }
+        // else if (xboxController.getLeftTriggerAxis() > .1) {
+        // leftFlywheel.set(TalonFXControlMode.PercentOutput, .60);
+        // }
+        // else {
+        // leftFlywheel.set(TalonFXControlMode.PercentOutput, 0);
+        // // leftFlywheel.set(TalonFXControlMode.Velocity, 0);
+        // }
+
+        // if (joystick.getRawButton(9) || xboxController.getPOV() == 180) {//climber down
+        // leftClimber.set(TalonFXControlMode.PercentOutput, -.85);
+        // }
+        // else if (joystick.getRawButton(10) || xboxController.getPOV() == 0) {
+        // leftClimber.set(TalonFXControlMode.PercentOutput, .85);
+        // }
+        // else {
+        // leftClimber.set(TalonFXControlMode.PercentOutput, 0);
+        // };
+
+        // if (xboxController.getStartButtonPressed()) {
+        // leftClimber.overrideLimitSwitchesEnable(true);
+        // rightClimber.overrideLimitSwitchesEnable(true);
+        // }
+
+        // if (joystick.getRawButton(6)) {
+        // // intake.out();     
+        // intake.getActuator().set(-1);
+        // }
+        // else if (joystick.getRawButton(4)) {
+        // // intake.in();
+        // intake.getActuator().set(1);
+        // }
+        // else {
+        //     intake.getActuator().set(0);
+        // }
+
+        */
+
+  }
+
   @Override
-  public void simulationPeriodic() {}
+  public void disabledInit() {
+    
+  }
+
+  @Override
+  public void disabledPeriodic() {
+    
+  }
+
+  @Override
+  public void testInit() {
+    
+  }
 }
