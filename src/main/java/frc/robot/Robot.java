@@ -38,7 +38,7 @@ public class Robot extends TimedRobot {
   private final SendableChooser<String> m_chooser = new SendableChooser<>();
   //private final Joystick joystick = new Joystick(0);
   private final XboxController xboxController = new XboxController(0);
-  private DriveTrain driveTrain = DriveTrain.getInstance2();
+  private DriveTrain driveTrain = DriveTrain.getInstance();
   private FeederWheel feederWheel = FeederWheel.getInstance();
   private Flywheel flywheel = Flywheel.getInstance();
 

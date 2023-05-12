@@ -5,21 +5,21 @@ import edu.wpi.first.wpilibj.motorcontrol.MotorControllerGroup;
 import com.revrobotics.CANSparkMax;
 import com.revrobotics.CANSparkMaxLowLevel.MotorType;
 import com.revrobotics.CANSparkMax.IdleMode;
-import com.ctre.phoenix.motorcontrol.can.WPI_VictorSPX;
+// import com.ctre.phoenix.motorcontrol.can.WPI_VictorSPX;
 
 
 
-import edu.wpi.first.networktables.NetworkTableEntry;
-import edu.wpi.first.wpilibj.TimedRobot;
-import edu.wpi.first.wpilibj.XboxController;
-import edu.wpi.first.wpilibj.shuffleboard.BuiltInWidgets;
-import edu.wpi.first.wpilibj.shuffleboard.ComplexWidget;
-import edu.wpi.first.wpilibj.shuffleboard.Shuffleboard;
-import edu.wpi.first.wpilibj.shuffleboard.ShuffleboardTab;
-import edu.wpi.first.wpilibj.smartdashboard.SendableChooser;
-import edu.wpi.first.wpilibj.DriverStation;
-import edu.wpi.first.wpilibj.Joystick;
-import edu.wpi.first.wpilibj.PowerDistribution;
+// import edu.wpi.first.networktables.NetworkTableEntry;
+// import edu.wpi.first.wpilibj.TimedRobot;
+// import edu.wpi.first.wpilibj.XboxController;
+// import edu.wpi.first.wpilibj.shuffleboard.BuiltInWidgets;
+// import edu.wpi.first.wpilibj.shuffleboard.ComplexWidget;
+// import edu.wpi.first.wpilibj.shuffleboard.Shuffleboard;
+// import edu.wpi.first.wpilibj.shuffleboard.ShuffleboardTab;
+// import edu.wpi.first.wpilibj.smartdashboard.SendableChooser;
+// import edu.wpi.first.wpilibj.DriverStation;
+// import edu.wpi.first.wpilibj.Joystick;
+// import edu.wpi.first.wpilibj.PowerDistribution;
 
 import edu.wpi.first.wpilibj.smartdashboard.SmartDashboard;
 
@@ -58,10 +58,16 @@ public class DriveTrain {
         rightMotor1.burnFlash();
         rightMotor2.burnFlash();
 
+        //TODO: remove this if needed
+        leftMotor1.setOpenLoopRampRate(driveRampRate);
+        leftMotor2.setOpenLoopRampRate(driveRampRate);
+        rightMotor1.setOpenLoopRampRate(driveRampRate);
+        rightMotor2.setOpenLoopRampRate(driveRampRate);
+
         differentialDrive = new DifferentialDrive(leftMotors, rightMotors);
     }
   
-    public static DriveTrain getInstance2() {
+    public static DriveTrain getInstance() {
         if (instance == null) {
             instance = new DriveTrain();
         }
@@ -105,7 +111,7 @@ public class DriveTrain {
     private static double kP = 0.01;
     private static double turningkP = 0.009;
 
-    public void safeArcade(double speed, double turn){arcadeDrive(speed, turn);}
+    // public void safeArcade(double speed, double turn){arcadeDrive(speed, turn);}
 
     public void drivetrainAngleLineup(double xSpeed) {
         kP = SmartDashboard.getNumber("drivetrain_kP", 0);
@@ -133,35 +139,34 @@ public class DriveTrain {
 
     public double getCurrentAngle() {return IMU.getAngle();}
 
-    public void drivetrainTurn(double xSpeed, double targetAngle){
-        turningkP = SmartDashboard.getNumber("turn_kP", 0);
+    // public void drivetrainTurn(double xSpeed, double targetAngle){
+    //     turningkP = SmartDashboard.getNumber("turn_kP", 0);
 
-        double turnPower = -(getCurrentAngle() - targetAngle) * turningkP;        /////////////
+    //     double turnPower = -(getCurrentAngle() - targetAngle) * turningkP;        /////////////
 
-         if (inRange(turnPower, -MIN_POWER, MIN_POWER)) {
-            turnPower = MIN_POWER * Math.signum(turnPower);
-        }
+    //     if (inRange(turnPower, -MIN_POWER, MIN_POWER)) {
+    //         turnPower = MIN_POWER * Math.signum(turnPower);
+    //     }
 
-        if (inRange(getCurrentAngle() - targetAngle, -TURN_MIN_ANGLE_DEGREES, TURN_MIN_ANGLE_DEGREES)) {
-            turnPower = 0;
-        }
+    //     if (inRange(getCurrentAngle() - targetAngle, -TURN_MIN_ANGLE_DEGREES, TURN_MIN_ANGLE_DEGREES)) {
+    //         turnPower = 0;
+    //     }
 
-        if (turnPower > 0.5){
-            turnPower = 0.5;
-        } else if (turnPower < -0.5){
-            turnPower = -0.5;
-        }
-        arcadeDrive(xSpeed, turnPower);
-    }
+    //     if (turnPower > 0.5){
+    //         turnPower = 0.5;
+    //     } else if (turnPower < -0.5){
+    //         turnPower = -0.5;
+    //     }
+    //     arcadeDrive(xSpeed, turnPower);
+    // }
 
         
 
-        private boolean inRange(double input, double low, double high
-        ){
-            if((input >=low )&&(input <=high )){return true;}
-            else {return false;}
+    private boolean inRange(double input, double low, double high){
+        if((input >=low )&&(input <=high )){return true;}
+        else {return false;}
 
-        }
+    }
 }
 
 
