@@ -53,10 +53,9 @@ public class DriveTrain {
         rightMotor1.restoreFactoryDefaults();
         rightMotor2.restoreFactoryDefaults();
 
-        leftMotor1.burnFlash();
-        leftMotor2.burnFlash();
-        rightMotor1.burnFlash();
-        rightMotor2.burnFlash();
+        //TODO: I think this is needed but I could be totally wrong
+        rightMotor1.setInverted(true);
+        rightMotor2.setInverted(true);
 
         //TODO: remove this if needed
         leftMotor1.setOpenLoopRampRate(driveRampRate);
@@ -65,6 +64,11 @@ public class DriveTrain {
         rightMotor2.setOpenLoopRampRate(driveRampRate);
 
         differentialDrive = new DifferentialDrive(leftMotors, rightMotors);
+
+        leftMotor1.burnFlash();
+        leftMotor2.burnFlash();
+        rightMotor1.burnFlash();
+        rightMotor2.burnFlash();
     }
   
     public static DriveTrain getInstance() {
@@ -133,7 +137,8 @@ public class DriveTrain {
             outputTurn = 0;
         }
 
-        arcadeDrive(outputSpeed, outputTurn);
+        //TODO: I'm pretty sure this is right because we don't want it to go forward while lining up
+        arcadeDrive(0, outputSpeed * outputTurn);
         SmartDashboard.putNumber("Limelight HorizontalAngle",  limelight.getHorizontalAngle());
     }
 

@@ -95,8 +95,8 @@ public class Robot extends TimedRobot {
     }
   }
 
-  double drive_speed = 0.0;
-    double prev_speed = 0.0;
+    double drive_speed = 0.0;
+    // double prev_speed = 0.0;
     @Override
     public void teleopPeriodic() {
 
@@ -109,17 +109,29 @@ public class Robot extends TimedRobot {
         //     }
         // }
 
+        if (xboxController.getAButton()) {
+          //TODO: I may have totally flipped one of these axes, add or get rid of any negatives as needed
+          drive_speed = -xboxController.getLeftY();
+          driveTrain.arcadeDrive(drive_speed, xboxController.getRightX() * 0.6);
+        } 
+        else if (xboxController.getBButton()) {
+          //TODO: just trying an arbitrary value for now, change this if needed
+          driveTrain.drivetrainAngleLineup(1);
+          
+          //TODO: possible auto shooting thing you could add
+          /*if (Math.abs(LimelightVisionTracking.getInstance().getHorizontalAngle()) < 2) {
+            flywheel.setFlywheelSpeed(.6);
+            feederWheel.setFeederWheelSpeed(.4);
+          }*/
+        }
 
-        drive_speed = xboxController.getRightX();
-
-        driveTrain.arcadeDrive(drive_speed, -xboxController.getLeftY() * 0.6);
-
-  
         flywheel.setFlywheelSpeed(xboxController.getLeftTriggerAxis());
         
         feederWheel.setFeederWheelSpeed(xboxController.getRightTriggerAxis());
 
-        driveTrain.drivetrainAngleLineup(xboxController.getLeftX());
+        
+
+
 
         /*  if (joystick.getRawButton(8)) {
         // intake.on();
