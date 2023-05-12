@@ -109,21 +109,22 @@ public class Robot extends TimedRobot {
         //     }
         // }
 
-        if (xboxController.getAButton()) {
-          //TODO: I may have totally flipped one of these axes, add or get rid of any negatives as needed
-          drive_speed = -xboxController.getLeftY();
-          driveTrain.arcadeDrive(drive_speed, xboxController.getRightX() * 0.6);
-        } 
-        else if (xboxController.getBButton()) {
+        
+        if (xboxController.getBButton()) {
           //TODO: just trying an arbitrary value for now, change this if needed
           driveTrain.drivetrainAngleLineup(1);
-          
+
           //TODO: possible auto shooting thing you could add
           /*if (Math.abs(LimelightVisionTracking.getInstance().getHorizontalAngle()) < 2) {
             flywheel.setFlywheelSpeed(.6);
             feederWheel.setFeederWheelSpeed(.4);
           }*/
         }
+        else {
+          //TODO: I may have totally flipped one of these axes, add or get rid of any negatives as needed
+          drive_speed = -xboxController.getLeftY();
+          driveTrain.arcadeDrive(drive_speed, xboxController.getRightX() * 0.6);
+        } 
 
         flywheel.setFlywheelSpeed(xboxController.getLeftTriggerAxis());
         
