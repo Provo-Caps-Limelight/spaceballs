@@ -1,0 +1,23 @@
+// Template file for singleton classes
+
+package frc.robot;
+
+
+
+public class CLASSNAME {
+    private static CLASSNAME instance;
+
+
+
+    private CLASSNAME() {
+
+    }
+
+    public static CLASSNAME getInstance() {
+        if (instance == null) {
+            instance = new CLASNAME();
+        }
+        return instance;
+    }
+
+}
